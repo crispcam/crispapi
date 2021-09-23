@@ -1,21 +1,21 @@
-package catalog
+package crispapi
 
-type Results struct {
-	Results map[string]Item `json:"results" firestore:"results,omitempty"`
+type CatalogResults struct {
+	Results map[string]CatalogItem `json:"results" firestore:"results,omitempty"`
 }
 
-type Item struct {
+type CatalogItem struct {
 	ID            string    `json:"id" firestore:"id,omitempty"`
 	Brand         string    `json:"brand" firestore:"brand,omitempty"`
-	Name          string    `json:"name" firestore:"name,omitempty"`
-	Images        Images    `json:"images" firestore:"images,omitempty"`
-	Categories    []string  `json:"categories" firestore:"categories,omitempty"`
+	Name       string        `json:"name" firestore:"name,omitempty"`
+	Images     CatalogImages `json:"images" firestore:"images,omitempty"`
+	Categories []string      `json:"categories" firestore:"categories,omitempty"`
 	FlavourGroups []string  `json:"flavour_groups" firestore:"flavourGroups,omitempty"`
 	Ingredients   []string  `json:"ingredients,omitempty" firestore:"ingredients,omitempty"`
 	Nutrition     Nutrition `json:"nutrition" firestore:"nutrition,omitempty"`
 }
 
-type Images struct {
+type CatalogImages struct {
 	HqImage string `json:"hq_image" firestore:"hqImage,omitempty"`
 	LqImage string `json:"lq_image" firestore:"lqImage,omitempty"`
 }
