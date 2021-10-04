@@ -9,10 +9,15 @@ type Item struct {
 	Brand         string    `json:"brand" firestore:"brand,omitempty"`
 	Name          string    `json:"name" firestore:"name,omitempty"`
 	Images        Images    `json:"images" firestore:"images,omitempty"`
-	Categories    []string  `json:"categories" firestore:"categories,omitempty"`
-	FlavourGroups []string  `json:"flavour_groups" firestore:"flavourGroups,omitempty"`
-	Ingredients   []string  `json:"ingredients,omitempty" firestore:"ingredients,omitempty"`
+	Categories    []string  `json:"categories" firestore:"categories"`
+	FlavourGroups []string  `json:"flavour_groups" firestore:"flavourGroups"`
+	Ingredients   []string  `json:"ingredients,omitempty" firestore:"ingredients"`
 	Nutrition     Nutrition `json:"nutrition" firestore:"nutrition,omitempty"`
+	Score         Accuracy  `json:"accuracy,omitempty"`
+}
+
+type Accuracy struct {
+	Score float64 `json:"score,omitempty"`
 }
 
 type Images struct {
