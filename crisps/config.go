@@ -39,7 +39,6 @@ type CrispCamConfig struct {
 
 type ServicesConfig struct {
 	Catalog        string `mapstructure:"catalog"`
-	Save           string `mapstructure:"save"`
 	AutoML         string `mapstructure:"automl"`
 	LocalML        string `mapstructure:"localml"`
 	Assets         string `mapstructure:"assets"`
@@ -53,10 +52,10 @@ type ServicesConfig struct {
 }
 
 type PathsConfig struct {
-	Catalog Path `mapstructure:"catalog"`
-	Reviews Path `mapstructure:"reviews"`
-	AutoML  Path `mapstructure:"automl"`
-	Save    Path `mapstructure:"save"`
+	Catalog      Path `mapstructure:"catalog"`
+	Reviews      Path `mapstructure:"reviews"`
+	AutoML       Path `mapstructure:"automl"`
+	CrispCamSave Path `mapstructure:"crispcam_save"`
 }
 
 type Path struct {
