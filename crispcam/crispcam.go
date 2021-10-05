@@ -15,5 +15,5 @@ type Response struct {
 type Save struct {
 	Image   string   `json:"image,omitempty"`
 	Results Response `json:"crisps_results"`
-	Save    bool     `json:"save,omitempty"`
+	Save    bool     `json:"save"`
 }
