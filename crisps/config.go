@@ -23,6 +23,7 @@ func LoadConfig() (Config, error) {
 type Config struct {
 	Firestore FirestoreConfig `mapstructure:"firestore"`
 	CrispCam  CrispCamConfig  `mapstructure:"crispcam"`
+	DB        DBConfig        `mapstructure:"db"`
 	Port      string          `mapstructure:"port"`
 	Project   string          `mapstructure:"project"`
 }
@@ -34,6 +35,7 @@ type FirestoreConfig struct {
 type CrispCamConfig struct {
 	Services  ServicesConfig `mapstructure:"services"`
 	Paths     PathsConfig    `mapstructure:"paths"`
+	Review    ReviewConfig   `mapstructure:"review"`
 	Threshold float64        `mapstructure:"threshold"`
 }
 
@@ -68,4 +70,16 @@ type Path struct {
 	Rating  string `mapstructure:"rating"`
 	Ratings string `mapstructure:"ratings"`
 	Save    string `mapstructure:"save"`
+}
+
+type ReviewConfig struct {
+	Colour string `mapstructure:"colour"`
+}
+
+type DBConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	Name     string `mapstructure:"name"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }
