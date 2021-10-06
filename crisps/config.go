@@ -74,6 +74,7 @@ type Path struct {
 
 type ReviewConfig struct {
 	Colour string `mapstructure:"colour"`
+	Broken bool   `mapstructure:"broken"`
 }
 
 type DBConfig struct {
