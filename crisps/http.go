@@ -5,9 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"google.golang.org/grpc/metadata"
-	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type contextKey string
@@ -58,19 +59,25 @@ func TraceHeaders(ctx context.Context) (http.Header, bool) {
 	return headers, ok
 }
 
-func Request(r *http.Request, u string, method string, body io.Reader) ([]byte, error) {
+func Request(r *http.Request, u string, method string, form url.Values) ([]byte, error) {
 	var result []byte
-	req, err := http.NewRequest(method, u, body)
+	req, err := http.NewRequest(method, u, strings.NewReader(form.Encode()))
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	// Persist http headers
 	req = req.WithContext(r.Context())
 	headers, ok := TraceHeaders(r.Context())
 	// Don't worry if this doesn't work, just don't persist them
 	if ok {
 		req.Header = headers
+	}
+	// Assume json if there is no body, otherwise it's an encoded form
+	if form == nil {
+		req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	} else {
+		req.PostForm = form
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
 	client := &http.Client{}
 	resp, err := client.Do(req)
