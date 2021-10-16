@@ -26,6 +26,7 @@ type Config struct {
 	DB        DBConfig        `mapstructure:"db"`
 	Port      string          `mapstructure:"port"`
 	Project   string          `mapstructure:"project"`
+	Redis     RedisConfig     `mapstructure:"redis"`
 }
 
 type FirestoreConfig struct {
@@ -51,25 +52,34 @@ type ServicesConfig struct {
 	CrispCamSave   string `mapstructure:"crispcam_save"`
 	Frontend       string `mapstructure:"frontend"`
 	Reviews        string `mapstructure:"reviews"`
+	Search         string `mapstructure:"search"`
+	SearchPublic   string `mapstructure:"search_public"`
 }
 
 type PathsConfig struct {
 	Catalog      Path `mapstructure:"catalog"`
 	Reviews      Path `mapstructure:"reviews"`
 	AutoML       Path `mapstructure:"automl"`
+	CrispCam     Path `mapstructure:"crispcam"`
 	CrispCamSave Path `mapstructure:"crispcam_save"`
+	Search       Path `mapstructure:"search"`
+	Auth         Path `mapstructure:"auth"`
 }
 
 type Path struct {
-	Path    string `mapstructure:"path"`
-	All     string `mapstructure:"all"`
-	Many    string `mapstructure:"many"`
-	Single  string `mapstructure:"single"`
-	Reviews string `mapstructure:"reviews"`
-	Review  string `mapstructure:"review"`
-	Rating  string `mapstructure:"rating"`
-	Ratings string `mapstructure:"ratings"`
-	Save    string `mapstructure:"save"`
+	Path       string `mapstructure:"path"`
+	All        string `mapstructure:"all"`
+	Many       string `mapstructure:"many"`
+	Single     string `mapstructure:"single"`
+	Reviews    string `mapstructure:"reviews"`
+	Review     string `mapstructure:"review"`
+	Rating     string `mapstructure:"rating"`
+	Ratings    string `mapstructure:"ratings"`
+	Save       string `mapstructure:"save"`
+	Scan       string `mapstructure:"scan"`
+	Categories string `mapstructure:"categories"`
+	Search     string `mapstructure:"search"`
+	User       string `mapstructure:"user"`
 }
 
 type ReviewConfig struct {
@@ -84,4 +94,10 @@ type DBConfig struct {
 	Name     string `mapstructure:"name"`
 	Username string `mapstructure:"username"`
 	Password string `mapstructure:"password"`
+}
+
+type RedisConfig struct {
+	Host      string `mapstructure:"host"`
+	Port      string `mapstructure:"port"`
+	KeyPrefix string `mapstructure:"key_prefix"`
 }

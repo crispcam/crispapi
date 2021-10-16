@@ -2,8 +2,11 @@ package crisps
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"google.golang.org/grpc/metadata"
+	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -53,4 +56,30 @@ func TraceRequest(handler http.Handler) http.Handler {
 func TraceHeaders(ctx context.Context) (http.Header, bool) {
 	headers, ok := ctx.Value(contextKeyHeaders).(http.Header)
 	return headers, ok
+}
+
+func Request(r *http.Request, u string, method string, body io.Reader) ([]byte, error) {
+	var result []byte
+	req, err := http.NewRequest(method, u, body)
+	if err != nil {
+		return result, err
+	}
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	// Persist http headers
+	req = req.WithContext(r.Context())
+	headers, ok := TraceHeaders(r.Context())
+	// Don't worry if this doesn't work, just don't persist them
+	if ok {
+		req.Header = headers
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return result, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return result, errors.New("upstream status code " + string(rune(resp.StatusCode)))
+	}
+	result, err = ioutil.ReadAll(resp.Body)
+	return result, nil
 }
