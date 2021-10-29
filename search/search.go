@@ -6,3 +6,13 @@ type Result struct {
 	Name   string `json:"name,omitempty"`
 	Image  string `json:"img,omitempty"`
 }
+
+type Item struct {
+	Prefix  string
+	Matches []Result
+}
+
+type MatchPair struct {
+	Name   string
+	Weight int64
+}
