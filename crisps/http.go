@@ -85,7 +85,7 @@ func Request(r *http.Request, u string, method string, form url.Values) ([]byte,
 		return result, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return result, errors.New("upstream status code " + string(rune(resp.StatusCode)))
+		return result, errors.New(fmt.Sprintf("upstream status code %d (request URI: %v)", resp.StatusCode, u))
 	}
 	result, err = ioutil.ReadAll(resp.Body)
 	return result, nil
