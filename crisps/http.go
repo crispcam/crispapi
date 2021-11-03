@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"google.golang.org/grpc/metadata"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,6 +20,13 @@ var (
 
 func (c contextKey) String() string {
 	return "crisps context key: " + string(c)
+}
+
+func Health(w http.ResponseWriter, r *http.Request) {
+	// A very simple health check.
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, `{"alive": true}`)
 }
 
 func SendError(w http.ResponseWriter, err error) {
