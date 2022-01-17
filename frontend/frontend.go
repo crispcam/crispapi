@@ -14,6 +14,7 @@ type CatalogPage struct {
 	Reviews         reviews.Ratings
 	ReviewsError    bool
 	Stars           [10]int
+	Query           string
 }
 
 type ItemPage struct {
@@ -24,6 +25,7 @@ type ItemPage struct {
 	Review          reviews.Rating
 	ReviewError     bool
 	Stars           [10]int
+	Query           string
 }
 
 type CategoryPage struct {
@@ -33,6 +35,7 @@ type CategoryPage struct {
 	CategoryError   bool
 	Catalog         catalog.Results
 	CatalogError    bool
+	Query           string
 }
 
 type SearchPage struct {
@@ -49,9 +52,11 @@ type ErrorPage struct {
 	AutocompleteURL string
 	StatusCode      int
 	ErrorMessage    string
+	Query           string
 }
 
 type GenericPage struct {
 	Title           string
 	AutocompleteURL string
+	Query           string
 }
