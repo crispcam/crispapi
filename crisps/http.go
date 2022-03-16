@@ -49,6 +49,7 @@ func TraceRequest(handler http.Handler) http.Handler {
 			"x-b3-parentspanid",
 			"x-b3-flags",
 			"x-ot-span-context",
+			"user-agent",
 		}
 		for _, key := range tracingHeaders {
 			if val := r.Header.Get(key); val != "" {
