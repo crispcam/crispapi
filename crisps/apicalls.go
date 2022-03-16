@@ -5,6 +5,7 @@ import (
 	"github.com/crispcam/crispapi/catalog"
 	"github.com/crispcam/crispapi/reviews"
 	"github.com/crispcam/crispapi/search"
+	"log"
 	"net/http"
 )
 
@@ -94,6 +95,7 @@ func SearchResults(r *http.Request, config Config, q string) ([]search.Result, e
 	u := config.CrispCam.Services.Search + config.CrispCam.Paths.Search.Search + "/" + q
 	bodyBytes, err := Request(r, u, "GET", nil)
 	if err != nil {
+		log.Println("Request to " + u + " failed: " + err.Error())
 		return results, err
 	}
 	if len(bodyBytes) == 0 {
@@ -101,6 +103,7 @@ func SearchResults(r *http.Request, config Config, q string) ([]search.Result, e
 	}
 	err = json.Unmarshal(bodyBytes, &results)
 	if err != nil {
+		log.Println("Marshall response from " + u + " failed: " + err.Error())
 		return results, err
 	}
 
