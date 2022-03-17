@@ -4,7 +4,7 @@ import (
 	"cloud.google.com/go/profiler"
 )
 
-func Tracing(service string, version string) error {
+func Profiler(service string, version string) error {
 	cfg := profiler.Config{
 		Service:        service,
 		ServiceVersion: version,
