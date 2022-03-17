@@ -8,7 +8,6 @@ func Profiler(service string, version string) error {
 	cfg := profiler.Config{
 		Service:        service,
 		ServiceVersion: version,
-		DebugLogging:   true,
 	}
 
 	// Profiler initialization, best done as early as possible.
