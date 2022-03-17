@@ -49,6 +49,9 @@ func TraceRequest(handler http.Handler) http.Handler {
 			"x-b3-parentspanid",
 			"x-b3-flags",
 			"x-ot-span-context",
+			"traceparent",
+			"x-cloud-trace-context",
+			"grpc-trace-bin",
 			"user-agent",
 		}
 		for _, key := range tracingHeaders {
