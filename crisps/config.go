@@ -27,6 +27,7 @@ type Config struct {
 	Port      string          `mapstructure:"port"`
 	Project   string          `mapstructure:"project"`
 	Redis     RedisConfig     `mapstructure:"redis"`
+	App       AppConfig       `mapstructure:"app"`
 }
 
 type FirestoreConfig struct {
@@ -100,4 +101,9 @@ type RedisConfig struct {
 	Host      string `mapstructure:"host"`
 	Port      string `mapstructure:"port"`
 	KeyPrefix string `mapstructure:"key_prefix"`
+}
+
+type AppConfig struct {
+	Name    string `mapstructure:"name"`
+	Version string `mapstructure:"version"`
 }
