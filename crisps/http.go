@@ -43,16 +43,6 @@ func TraceRequest(handler http.Handler) http.Handler {
 		var headers = http.Header{}
 		ctx := r.Context()
 		tracingHeaders := []string{
-			"x-request-id",
-			"x-b3-traceid",
-			"x-b3-spanid",
-			"x-b3-sampled",
-			"x-b3-parentspanid",
-			"x-b3-flags",
-			"x-ot-span-context",
-			"traceparent",
-			"x-cloud-trace-context",
-			"grpc-trace-bin",
 			"user-agent",
 		}
 		for _, key := range tracingHeaders {
@@ -67,24 +57,13 @@ func TraceRequest(handler http.Handler) http.Handler {
 	})
 }
 
-func TraceHeaders(ctx context.Context) (http.Header, bool) {
-	headers, ok := ctx.Value(contextKeyHeaders).(http.Header)
-	return headers, ok
-}
-
 func Request(r *http.Request, u string, method string, form url.Values, ctx context.Context) ([]byte, error) {
 	var result []byte
 	req, err := http.NewRequestWithContext(ctx, method, u, strings.NewReader(form.Encode()))
 	if err != nil {
 		return result, err
 	}
-	// Persist http headers
-	req = req.WithContext(r.Context())
-	headers, ok := TraceHeaders(r.Context())
-	// Don't worry if this doesn't work, just don't persist them
-	if ok {
-		req.Header = headers
-	}
+
 	// Assume json if there is no body, otherwise it's an encoded form
 	if form == nil {
 		req.Header.Set("Content-Type", "application/json; charset=utf-8")
