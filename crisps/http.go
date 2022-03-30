@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"google.golang.org/grpc/metadata"
 	"io"
 	"io/ioutil"
@@ -71,9 +72,9 @@ func TraceHeaders(ctx context.Context) (http.Header, bool) {
 	return headers, ok
 }
 
-func Request(r *http.Request, u string, method string, form url.Values) ([]byte, error) {
+func Request(r *http.Request, u string, method string, form url.Values, ctx context.Context) ([]byte, error) {
 	var result []byte
-	req, err := http.NewRequest(method, u, strings.NewReader(form.Encode()))
+	req, err := http.NewRequestWithContext(ctx, method, u, strings.NewReader(form.Encode()))
 	if err != nil {
 		return result, err
 	}
@@ -91,7 +92,8 @@ func Request(r *http.Request, u string, method string, form url.Values) ([]byte,
 		req.PostForm = form
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	}
-	client := &http.Client{}
+
+	client := http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
 	resp, err := client.Do(req)
 	if err != nil {
 		return result, err
