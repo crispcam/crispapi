@@ -28,6 +28,7 @@ type Config struct {
 	Project   string          `mapstructure:"project"`
 	Redis     RedisConfig     `mapstructure:"redis"`
 	App       AppConfig       `mapstructure:"app"`
+	OIDC      OIDC            `mapstructure:"oidc"`
 }
 
 type FirestoreConfig struct {
@@ -106,4 +107,10 @@ type RedisConfig struct {
 type AppConfig struct {
 	Name    string `mapstructure:"name"`
 	Version string `mapstructure:"version"`
+}
+
+type OIDC struct {
+	ClientId     string `mapstructure:"client_id"`
+	ClientSecret string `mapstructure:"client_secret"`
+	Endpoint     string `mapstructure:"endpoint"`
 }

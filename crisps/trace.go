@@ -20,6 +20,6 @@ func Tracer(name string, project string) (trace.Tracer, error) {
 	sdktrace.WithSampler(sdktrace.AlwaysSample())
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
-	tracer := otel.GetTracerProvider().Tracer(name)
+	tracer := otel.GetTracerProvider().Tracer("crispcam.com/" + name)
 	return tracer, nil
 }
