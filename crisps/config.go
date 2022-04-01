@@ -88,6 +88,7 @@ type ReviewConfig struct {
 	Colour  string `mapstructure:"colour"`
 	Broken  bool   `mapstructure:"broken"`
 	Timeout int    `mapstructure:"timeout"`
+	Cache   bool   `mapstructure:"cache"`
 }
 
 type DBConfig struct {
