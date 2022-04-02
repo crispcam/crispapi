@@ -88,7 +88,6 @@ type ReviewConfig struct {
 	Colour  string `mapstructure:"colour"`
 	Broken  bool   `mapstructure:"broken"`
 	Timeout int    `mapstructure:"timeout"`
-	Cache   bool   `mapstructure:"cache"`
 }
 
 type DBConfig struct {
@@ -108,6 +107,7 @@ type RedisConfig struct {
 type AppConfig struct {
 	Name    string `mapstructure:"name"`
 	Version string `mapstructure:"version"`
+	Cache   bool   `mapstructure:"cache"`
 }
 
 type OIDC struct {
