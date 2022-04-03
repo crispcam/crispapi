@@ -9,7 +9,7 @@ type Request struct {
 }
 
 type Response struct {
-	Results []catalog.Item `json:"results,omitempty"`
+	Results []catalog.Item `json:"results"`
 }
 
 type Save struct {
