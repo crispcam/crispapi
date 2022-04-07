@@ -5,15 +5,15 @@ type Results struct {
 }
 
 type Item struct {
-	ID            string    `json:"id" firestore:"id,omitempty"`
-	Brand         string    `json:"brand" firestore:"brand,omitempty"`
-	Name          string    `json:"name" firestore:"name,omitempty"`
-	Images        Images    `json:"images" firestore:"images,omitempty"`
-	Categories    []string  `json:"categories" firestore:"categories"`
-	FlavourGroups []string  `json:"flavour_groups" firestore:"flavourGroups"`
-	Ingredients   []string  `json:"ingredients,omitempty" firestore:"ingredients"`
-	Nutrition     Nutrition `json:"nutrition" firestore:"nutrition,omitempty"`
-	Score         Accuracy  `json:"accuracy,omitempty"`
+	ID            string    `json:"id,omitempty" firestore:"id,omitempty"`
+	Brand         string    `json:"brand,omitempty" firestore:"brand,omitempty"`
+	Name          string    `json:"name,omitempty" firestore:"name,omitempty"`
+	Images        Images    `json:"images,omitempty" firestore:"images,omitempty"`
+	Categories    []string  `json:"categories,omitempty" firestore:"categories"`
+	FlavourGroups []string  `json:"flavour_groups,omitempty" firestore:"flavourGroups"`
+	Ingredients   []string  `json:"ingredients,omitempty,omitempty" firestore:"ingredients"`
+	Nutrition     Nutrition `json:"nutrition,omitempty" firestore:"nutrition,omitempty"`
+	Score         Accuracy  `json:"accuracy,omitempty"  firestore:"accuracy,omitempty"`
 }
 
 type Accuracy struct {
@@ -21,19 +21,19 @@ type Accuracy struct {
 }
 
 type Images struct {
-	HqImage string `json:"hq_image" firestore:"hqImage,omitempty"`
-	LqImage string `json:"lq_image" firestore:"lqImage,omitempty"`
+	HqImage string `json:"hq_image,omitempty" firestore:"hqImage,omitempty"`
+	LqImage string `json:"lq_image,omitempty" firestore:"lqImage,omitempty"`
 }
 type Nutrition struct {
-	EnergyKj     int     `json:"energy_kj" firestore:"energyKj,omitempty"`
-	EnergyCal    int     `json:"energy_cal" firestore:"energyCal,omitempty"`
-	Fat          float64 `json:"fat" firestore:"fat,omitempty"`
-	SaturatedFat float64 `json:"saturated_fat" firestore:"saturated_fat,omitempty"`
-	Carbs        float64 `json:"carbs" firestore:"carbs,omitempty"`
-	Sugar        float64 `json:"sugar" firestore:"sugar,omitempty"`
-	Fibre        float64 `json:"fibre" firestore:"fibre,omitempty"`
-	Protein      float64 `json:"protein" firestore:"protein,omitempty"`
-	Salt         float64 `json:"salt" firestore:"salt,omitempty"`
+	EnergyKj     int     `json:"energy_kj,omitempty" firestore:"energyKj,omitempty"`
+	EnergyCal    int     `json:"energy_cal,omitempty" firestore:"energyCal,omitempty"`
+	Fat          float64 `json:"fat,omitempty" firestore:"fat,omitempty"`
+	SaturatedFat float64 `json:"saturated_fat,omitempty" firestore:"saturated_fat,omitempty"`
+	Carbs        float64 `json:"carbs,omitempty" firestore:"carbs,omitempty"`
+	Sugar        float64 `json:"sugar,omitempty" firestore:"sugar,omitempty"`
+	Fibre        float64 `json:"fibre,omitempty" firestore:"fibre,omitempty"`
+	Protein      float64 `json:"protein,omitempty" firestore:"protein,omitempty"`
+	Salt         float64 `json:"salt,omitempty" firestore:"salt,omitempty"`
 }
 
 type Categories struct {

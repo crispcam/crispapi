@@ -10,6 +10,7 @@ type Request struct {
 
 type Response struct {
 	Results []catalog.Item `json:"results"`
+	Source  string         `json:"source"`
 }
 
 type Save struct {

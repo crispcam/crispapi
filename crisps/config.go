@@ -40,6 +40,7 @@ type CrispCamConfig struct {
 	Paths     PathsConfig    `mapstructure:"paths"`
 	Review    ReviewConfig   `mapstructure:"review"`
 	Threshold float64        `mapstructure:"threshold"`
+	Save      SaveConfig     `mapstructure:"save"`
 }
 
 type ServicesConfig struct {
@@ -88,6 +89,11 @@ type ReviewConfig struct {
 	Colour  string `mapstructure:"colour"`
 	Broken  bool   `mapstructure:"broken"`
 	Timeout int    `mapstructure:"timeout"`
+}
+
+type SaveConfig struct {
+	Bucket string `mapstructure:"bucket"`
+	Folder string `mapstructure:"folder"`
 }
 
 type DBConfig struct {
