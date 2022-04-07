@@ -117,7 +117,5 @@ type AppConfig struct {
 }
 
 type OIDC struct {
-	ClientId     string `mapstructure:"client_id"`
-	ClientSecret string `mapstructure:"client_secret"`
-	Endpoint     string `mapstructure:"endpoint"`
+	Endpoint string `mapstructure:"endpoint"`
 }
