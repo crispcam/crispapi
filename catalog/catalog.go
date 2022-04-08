@@ -14,6 +14,7 @@ type Item struct {
 	Ingredients   []string  `json:"ingredients,omitempty,omitempty" firestore:"ingredients"`
 	Nutrition     Nutrition `json:"nutrition,omitempty" firestore:"nutrition,omitempty"`
 	Score         Accuracy  `json:"accuracy,omitempty"  firestore:"accuracy,omitempty"`
+	Source        string    `json:"source,omitempty"  firestore:"-"`
 }
 
 type Accuracy struct {
