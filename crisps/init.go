@@ -30,7 +30,7 @@ func InitTracing(name string, project string) (tracer trace.Tracer, err error) {
 			log.Println("Tracing loaded")
 			return tracer, nil
 		} else {
-			log.Println("Profiler failed: "+err.Error()+" (attempt ", i, " of ", r, ")")
+			log.Println("Tracing failed: "+err.Error()+" (attempt ", i, " of ", r, ")")
 			time.Sleep(2000 * time.Millisecond)
 		}
 	}
