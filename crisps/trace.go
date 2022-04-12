@@ -3,7 +3,6 @@ package crisps
 import (
 	texporter "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -24,7 +23,7 @@ func Tracer(name string, project string) (trace.Tracer, error) {
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
 			semconv.ServiceNameKey.String(name),
-			attribute.String("project", project),
+			semconv.ServiceNamespaceKey.String("crispcam"),
 		),
 	)
 	if err != nil {
