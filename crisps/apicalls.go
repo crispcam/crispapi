@@ -3,9 +3,14 @@ package crisps
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/crispcam/crispapi/auth"
 	"github.com/crispcam/crispapi/catalog"
 	"github.com/crispcam/crispapi/reviews"
 	"github.com/crispcam/crispapi/search"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -127,4 +132,36 @@ func Assets(r *http.Request, config Config, ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func AuthZ(r *http.Request, config Config, token string) (user auth.User, err error) {
+	u := config.CrispCam.Services.Auth + config.CrispCam.Paths.Auth.User
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, u, nil)
+	if err != nil {
+		return user, err
+	}
+
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("authorization", "Bearer "+token)
+
+	client := http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
+	resp, err := client.Do(req)
+	if err != nil {
+		return user, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return user, errors.New(fmt.Sprintf("upstream status code %d (request URI: %v)", resp.StatusCode, u))
+	}
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return user, err
+	}
+	err = json.Unmarshal(bodyBytes, &user)
+	if err != nil {
+		log.Println("Marshall response from " + u + " failed: " + err.Error())
+		return user, err
+	}
+
+	return user, nil
 }

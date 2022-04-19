@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -31,9 +32,13 @@ func Health(w http.ResponseWriter, r *http.Request) {
 }
 
 func SendError(w http.ResponseWriter, err error) {
-	w.WriteHeader(http.StatusInternalServerError)
-	w.Write([]byte("500"))
-	fmt.Println(err.Error())
+	SendErrorMsg(w, err, "Error", http.StatusInternalServerError)
+	return
+}
+
+func SendErrorMsg(w http.ResponseWriter, err error, msg string, statusCode int) {
+	http.Error(w, msg, statusCode)
+	log.Println(err.Error())
 	return
 }
 

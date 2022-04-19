@@ -29,6 +29,7 @@ type Config struct {
 	Redis     RedisConfig     `mapstructure:"redis"`
 	App       AppConfig       `mapstructure:"app"`
 	OIDC      OIDC            `mapstructure:"oidc"`
+	Session   Session         `mapstructure:"session"`
 }
 
 type FirestoreConfig struct {
@@ -117,5 +118,14 @@ type AppConfig struct {
 }
 
 type OIDC struct {
-	Endpoint string `mapstructure:"endpoint"`
+	Endpoint     string   `mapstructure:"endpoint"`
+	ClientID     string   `mapstructure:"client_id"`
+	ClientSecret string   `mapstructure:"client_secret"`
+	Redirect     string   `mapstructure:"redirect"`
+	Provider     string   `mapstructure:"provider"`
+	Scopes       []string `mapstructure:"scopes"`
+	Callback     string   `mapstructure:"callback"`
+}
+type Session struct {
+	Key string `mapstructure:"key"`
 }
