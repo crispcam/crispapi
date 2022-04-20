@@ -84,6 +84,10 @@ type Path struct {
 	Categories string `mapstructure:"categories"`
 	Search     string `mapstructure:"search"`
 	User       string `mapstructure:"user"`
+	Reviewed   string `mapstructure:"reviewed"`
+	Flavours   string `mapstructure:"flavours"`
+	Delete     string `mapstructure:"delete"`
+	Update     string `mapstructure:"update"`
 }
 
 type ReviewConfig struct {

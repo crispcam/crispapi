@@ -46,7 +46,11 @@ type Flavour struct {
 /**
  * Not crisps (a selfie etc)
  */
-const NoResult = "no_result"
-const NotListed = "not_listed"
-const ReviewedField = "reviewed"
-const NotReviewed = "not_reviewed"
+const (
+	NoResult      = "no_result"
+	NotListed     = "not_listed"
+	ReviewedField = "reviewed"
+	NotReviewed   = "not_reviewed"
+	All           = "all"
+	NoChange      = "NO_CHANGE"
+)
