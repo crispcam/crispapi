@@ -119,7 +119,7 @@ func SearchResults(r *http.Request, config Config, q string) ([]search.Result, e
 }
 
 func UserInfo(r *http.Request, config Config, uid string) error {
-	u := config.CrispCam.Services.Auth + config.CrispCam.Paths.Auth.User + "/" + uid
+	u := config.CrispCam.Services.Auth + config.CrispCam.Paths.Auth.BasicUser + "/" + uid
 	_, err := Request(r, u, "GET", nil, r.Context())
 	if err != nil {
 		return err
@@ -289,4 +289,18 @@ func DeleteItem(r *http.Request, config Config, transaction string) (err error) 
 		return errors.New(fmt.Sprintf("invalid status code: %v", resp.StatusCode))
 	}
 	return nil
+}
+
+func CSV(r *http.Request, config Config) (bodyBytes []byte, err error) {
+	u := config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.CSV
+	bodyBytes, err = Request(r, u, "GET", nil, r.Context())
+	if err != nil {
+		log.Println("Request to " + u + " failed: " + err.Error())
+		return bodyBytes, err
+	}
+	if len(bodyBytes) == 0 {
+		return bodyBytes, nil
+	}
+
+	return bodyBytes, nil
 }

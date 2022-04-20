@@ -88,7 +88,6 @@ func CheckSession(w http.ResponseWriter, r *http.Request, sessionConfig SessionC
 		// Save current page
 		redir := fmt.Sprintf("%v", r.URL.Path)
 		session.Values[Redirect] = redir
-		log.Printf("Redirecting to %v\n", redir)
 		err = session.Save(r, w)
 		if err != nil {
 			log.Println("Warning: Could not save session:", err.Error())
