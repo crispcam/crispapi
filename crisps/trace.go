@@ -29,7 +29,7 @@ func Tracer(name string, project string) (trace.Tracer, error) {
 	if err != nil {
 		return nil, err
 	}
-	tp := sdktrace.NewTracerProvider(sdktrace.WithBatcher(exporter), sdktrace.WithResource(r))
+	tp := sdktrace.NewTracerProvider(sdktrace.WithSyncer(exporter), sdktrace.WithResource(r))
 	sdktrace.WithSampler(sdktrace.AlwaysSample())
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
