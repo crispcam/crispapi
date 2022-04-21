@@ -2,12 +2,13 @@ package crisps
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/crispcam/crispapi/auth"
 	"github.com/crispcam/crispapi/catalog"
-	crispcam_save "github.com/crispcam/crispapi/crispcam-save"
+	crispcamSave "github.com/crispcam/crispapi/crispcam-save"
 	"github.com/crispcam/crispapi/reviews"
 	"github.com/crispcam/crispapi/search"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -17,11 +18,11 @@ import (
 	"sort"
 )
 
-func CatalogAll(r *http.Request, config Config) (catalog.Results, error) {
+func CatalogAll(ctx context.Context, config Config) (catalog.Results, error) {
 	var results catalog.Results
 	// Process items from catalog
 	u := config.CrispCam.Services.Catalog + config.CrispCam.Paths.Catalog.All
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return results, err
 	}
@@ -33,11 +34,11 @@ func CatalogAll(r *http.Request, config Config) (catalog.Results, error) {
 	return results, nil
 }
 
-func CatalogItem(r *http.Request, config Config, id string) (catalog.Item, error) {
+func CatalogItem(ctx context.Context, config Config, id string) (catalog.Item, error) {
 	var item catalog.Item
 	// Process items from catalog
 	u := config.CrispCam.Services.Catalog + config.CrispCam.Paths.Catalog.Single + "/" + id
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return item, err
 	}
@@ -49,11 +50,11 @@ func CatalogItem(r *http.Request, config Config, id string) (catalog.Item, error
 	return item, nil
 }
 
-func ReviewAll(r *http.Request, config Config) (reviews.Ratings, error) {
+func ReviewAll(ctx context.Context, config Config) (reviews.Ratings, error) {
 	var results reviews.Ratings
 	// Process items from catalog
 	u := config.CrispCam.Services.Reviews + config.CrispCam.Paths.Reviews.Ratings
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return results, err
 	}
@@ -65,11 +66,11 @@ func ReviewAll(r *http.Request, config Config) (reviews.Ratings, error) {
 	return results, nil
 }
 
-func ReviewItem(r *http.Request, config Config, id string) (reviews.Rating, error) {
+func ReviewItem(ctx context.Context, config Config, id string) (reviews.Rating, error) {
 	var result reviews.Rating
 	// Process items from catalog
 	u := config.CrispCam.Services.Reviews + config.CrispCam.Paths.Reviews.Rating + "/" + id
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return result, err
 	}
@@ -81,11 +82,11 @@ func ReviewItem(r *http.Request, config Config, id string) (reviews.Rating, erro
 	return result, nil
 }
 
-func CategoryAll(r *http.Request, config Config) (catalog.Categories, error) {
+func CategoryAll(ctx context.Context, config Config) (catalog.Categories, error) {
 	var results catalog.Categories
 	// Process items from catalog
 	u := config.CrispCam.Services.Catalog + config.CrispCam.Paths.Catalog.Categories
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return results, err
 	}
@@ -97,11 +98,11 @@ func CategoryAll(r *http.Request, config Config) (catalog.Categories, error) {
 	return results, nil
 }
 
-func SearchResults(r *http.Request, config Config, q string) ([]search.Result, error) {
+func SearchResults(ctx context.Context, config Config, q string) ([]search.Result, error) {
 	var results []search.Result
 	// Process items from catalog
 	u := config.CrispCam.Services.Search + config.CrispCam.Paths.Search.Search + "/" + q
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		log.Println("Request to " + u + " failed: " + err.Error())
 		return results, err
@@ -118,27 +119,27 @@ func SearchResults(r *http.Request, config Config, q string) ([]search.Result, e
 	return results, nil
 }
 
-func UserInfo(r *http.Request, config Config, uid string) error {
+func UserInfo(ctx context.Context, config Config, uid string) error {
 	u := config.CrispCam.Services.Auth + config.CrispCam.Paths.Auth.BasicUser + "/" + uid
-	_, err := Request(r, u, "GET", nil, r.Context())
+	_, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func Assets(r *http.Request, config Config) error {
+func Assets(ctx context.Context, config Config) error {
 	u := config.CrispCam.Services.Assets + "/v1/simulate"
-	_, err := Request(r, u, "GET", nil, r.Context())
+	_, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func AuthZ(r *http.Request, config Config, token string) (user auth.User, err error) {
+func AuthZ(ctx context.Context, config Config, token string) (user auth.User, err error) {
 	u := config.CrispCam.Services.Auth + config.CrispCam.Paths.Auth.User
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, u, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return user, err
 	}
@@ -176,7 +177,7 @@ const (
 	NotReviewed
 )
 
-func SavedItems(r *http.Request, config Config, saveType SaveType) (results crispcam_save.Results, err error) {
+func SavedItems(ctx context.Context, config Config, saveType SaveType) (results crispcamSave.Results, err error) {
 	var u string
 	if saveType == All {
 		u = config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.All
@@ -190,7 +191,7 @@ func SavedItems(r *http.Request, config Config, saveType SaveType) (results cris
 			return results, errors.New(fmt.Sprintf("unknown type %v", saveType))
 		}
 	}
-	bodyBytes, err := Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err := Request(ctx, u, "GET", nil)
 	if err != nil {
 		return results, err
 	}
@@ -206,10 +207,10 @@ func SavedItems(r *http.Request, config Config, saveType SaveType) (results cris
 	return results, nil
 }
 
-func SavedItem(r *http.Request, config Config, transaction string) (result crispcam_save.Image, err error) {
+func SavedItem(ctx context.Context, config Config, transaction string) (result crispcamSave.Image, err error) {
 	// Process items from catalog
 	u := config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.Single + "/" + transaction
-	bodyBytes, err := Request(r, u, http.MethodGet, nil, r.Context())
+	bodyBytes, err := Request(ctx, u, http.MethodGet, nil)
 	if err != nil {
 		log.Println("Request to " + u + " failed: " + err.Error())
 		return result, err
@@ -225,17 +226,17 @@ func SavedItem(r *http.Request, config Config, transaction string) (result crisp
 	return result, nil
 }
 
-func UpdateItem(r *http.Request, config Config, transaction string, match string, reviewed bool) (err error) {
+func UpdateItem(ctx context.Context, config Config, transaction string, match string, reviewed bool) (err error) {
 	// Process items from catalog
 	u := config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.Update + "/" + transaction + "/" + match + "/" + fmt.Sprintf("%v", reviewed)
-	_, err = Request(r, u, http.MethodPut, nil, r.Context())
+	_, err = Request(ctx, u, http.MethodPut, nil)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func Flavours(r *http.Request, config Config, images crispcam_save.Results) (flavours crispcam_save.Flavours, err error) {
+func Flavours(ctx context.Context, config Config, images crispcamSave.Results) (flavours crispcamSave.Flavours, err error) {
 	u := config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.Flavours
 	jsonBody, err := json.Marshal(images.Results)
 	if err != nil {
@@ -247,7 +248,7 @@ func Flavours(r *http.Request, config Config, images crispcam_save.Results) (fla
 	}
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	// Persist http headers
-	req = req.WithContext(r.Context())
+	req = req.WithContext(ctx)
 	client := http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -270,7 +271,7 @@ func Flavours(r *http.Request, config Config, images crispcam_save.Results) (fla
 	return flavours, nil
 }
 
-func DeleteItem(r *http.Request, config Config, transaction string) (err error) {
+func DeleteItem(ctx context.Context, config Config, transaction string) (err error) {
 	u := config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.Delete + "/" + transaction
 	req, err := http.NewRequest(http.MethodDelete, u, nil)
 	if err != nil {
@@ -278,7 +279,7 @@ func DeleteItem(r *http.Request, config Config, transaction string) (err error) 
 	}
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	// Persist http headers
-	req = req.WithContext(r.Context())
+	req = req.WithContext(ctx)
 	client := http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -291,9 +292,9 @@ func DeleteItem(r *http.Request, config Config, transaction string) (err error) 
 	return nil
 }
 
-func CSV(r *http.Request, config Config) (bodyBytes []byte, err error) {
+func CSV(ctx context.Context, config Config) (bodyBytes []byte, err error) {
 	u := config.CrispCam.Services.CrispCamSave + config.CrispCam.Paths.CrispCamSave.CSV
-	bodyBytes, err = Request(r, u, "GET", nil, r.Context())
+	bodyBytes, err = Request(ctx, u, "GET", nil)
 	if err != nil {
 		log.Println("Request to " + u + " failed: " + err.Error())
 		return bodyBytes, err

@@ -2,7 +2,7 @@ package auth
 
 import "time"
 
-type AuthID struct {
+type ID struct {
 	Sub           string `json:"sub"`
 	Name          string `json:"name"`
 	GivenName     string `json:"given_name"`

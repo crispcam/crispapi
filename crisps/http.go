@@ -28,9 +28,12 @@ func Health(w http.ResponseWriter, r *http.Request) {
 	// A very simple health check.
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	io.WriteString(w, `{"alive": true}`)
+	_, _ = io.WriteString(w, `{"alive": true}`)
 }
 
+/*
+Deprecated: Use SendErrorMsg() instead
+*/
 func SendError(w http.ResponseWriter, err error) {
 	SendErrorMsg(w, err, "Error", http.StatusInternalServerError)
 	return
@@ -62,14 +65,14 @@ func TraceRequest(handler http.Handler) http.Handler {
 	})
 }
 
-func Request(r *http.Request, u string, method string, form url.Values, ctx context.Context) ([]byte, error) {
+func Request(ctx context.Context, u string, method string, form url.Values) ([]byte, error) {
 	var result []byte
 	req, err := http.NewRequestWithContext(ctx, method, u, strings.NewReader(form.Encode()))
 	if err != nil {
 		return result, err
 	}
 
-	// Assume json if there is no body, otherwise it's an encoded form
+	// Assume json if there isn't a body, otherwise it's an encoded form
 	if form == nil {
 		req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	} else {
