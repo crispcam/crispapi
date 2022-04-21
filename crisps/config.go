@@ -1,8 +1,8 @@
 package crisps
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
+	"log"
 )
 
 func LoadConfig() (Config, error) {
@@ -14,7 +14,7 @@ func LoadConfig() (Config, error) {
 		return config, err
 	}
 	if err := viper.Unmarshal(&config); err != nil {
-		fmt.Println(err)
+		log.Printf("Error loading config: %v", err)
 		return config, err
 	}
 	return config, nil
