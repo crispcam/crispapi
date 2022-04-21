@@ -1,6 +1,7 @@
 package oidc
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
@@ -36,7 +37,7 @@ type UserSession struct {
 	Valid bool
 }
 
-func SessionActive(sessionConfig SessionConfig, r *http.Request, session *sessions.Session) (userSession UserSession, err error) {
+func SessionActive(ctx context.Context, sessionConfig SessionConfig, session *sessions.Session) (userSession UserSession, err error) {
 	userSession.Valid = false
 
 	expiry, err := time.Parse(time.RFC3339, fmt.Sprintf("%v", session.Values[Expiry]))
@@ -52,14 +53,14 @@ func SessionActive(sessionConfig SessionConfig, r *http.Request, session *sessio
 	idToken := session.Values[IDToken]
 
 	// Parse and verify ID Token payload.
-	_, err = sessionConfig.Verifier.Verify(r.Context(), fmt.Sprintf("%v", idToken))
+	_, err = sessionConfig.Verifier.Verify(ctx, fmt.Sprintf("%v", idToken))
 	if err != nil {
 		log.Println(err.Error())
 		return userSession, err
 	}
 
 	// Obtain AuthZ
-	user, err := crisps.AuthZ(r, sessionConfig.Config, fmt.Sprintf("%v", session.Values[Token]))
+	user, err := crisps.AuthZ(ctx, sessionConfig.Config, fmt.Sprintf("%v", session.Values[Token]))
 	if err != nil {
 		log.Println(err.Error())
 		return userSession, err
@@ -76,7 +77,7 @@ func CheckSession(w http.ResponseWriter, r *http.Request, sessionConfig SessionC
 	if err != nil {
 		return UserSession{}, err
 	}
-	userSession, err := SessionActive(sessionConfig, r, session)
+	userSession, err := SessionActive(r.Context(), sessionConfig, session)
 	if err != nil {
 		return userSession, err
 	}
