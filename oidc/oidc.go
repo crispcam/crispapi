@@ -18,17 +18,21 @@ import (
 	"time"
 )
 
-const Expiry = "expire"
-const Token = "token"
-const Redirect = "redirect"
-const Authorization = "authorization"
-const IDToken = "id-token"
+const (
+	Expiry         = "expire"
+	Token          = "token"
+	Redirect       = "redirect"
+	Authorization  = "authorization"
+	IDToken        = "id-token"
+	AppConfigKey   = "crispcam-oidc-config"
+	UserSessionKey = "crispcam-session"
+)
 
 type SessionConfig struct {
 	SessionStore *redisstore.RedisStore
-	Config       crisps.Config
+	Config       *crisps.Config
 	OidcProvider *oidclib.Provider
-	Oauth2Config oauth2.Config
+	Oauth2Config *oauth2.Config
 	Verifier     *oidclib.IDTokenVerifier
 }
 
@@ -37,9 +41,12 @@ type UserSession struct {
 	Valid bool
 }
 
-func SessionActive(ctx context.Context, sessionConfig SessionConfig, session *sessions.Session) (userSession UserSession, err error) {
+func SessionActive(ctx context.Context, session *sessions.Session) (userSession UserSession, err error) {
+	sessionConfig, ok := ctx.Value(AppConfigKey).(*SessionConfig)
+	if !ok {
+		println("Cannot get session config!")
+	}
 	userSession.Valid = false
-
 	expiry, err := time.Parse(time.RFC3339, fmt.Sprintf("%v", session.Values[Expiry]))
 	if err != nil {
 		// This means there's no expiry time - redirect to login
@@ -60,7 +67,7 @@ func SessionActive(ctx context.Context, sessionConfig SessionConfig, session *se
 	}
 
 	// Obtain AuthZ
-	user, err := crisps.AuthZ(ctx, sessionConfig.Config, fmt.Sprintf("%v", session.Values[Token]))
+	user, err := crisps.AuthZ(ctx, fmt.Sprintf("%v", session.Values[Token]))
 	if err != nil {
 		log.Println(err.Error())
 		return userSession, err
@@ -72,12 +79,18 @@ func SessionActive(ctx context.Context, sessionConfig SessionConfig, session *se
 
 }
 
-func CheckSession(w http.ResponseWriter, r *http.Request, sessionConfig SessionConfig) (UserSession, error) {
+func CheckSession(w http.ResponseWriter, r *http.Request) (userSession UserSession, err error) {
+
+	sessionConfig, ok := r.Context().Value(AppConfigKey).(*SessionConfig)
+	if !ok {
+		println("Cannot get session config!")
+	}
+
 	session, err := sessionConfig.SessionStore.Get(r, sessionConfig.Config.Session.Key)
 	if err != nil {
 		return UserSession{}, err
 	}
-	userSession, err := SessionActive(r.Context(), sessionConfig, session)
+	userSession, err = SessionActive(r.Context(), session)
 	if err != nil {
 		return userSession, err
 	}
@@ -102,7 +115,6 @@ func CheckSession(w http.ResponseWriter, r *http.Request, sessionConfig SessionC
 }
 
 func LoginCallback(w http.ResponseWriter, r *http.Request, sessionConfig SessionConfig) error {
-
 	ctx := r.Context()
 	state, err := r.Cookie("state")
 	if err != nil {

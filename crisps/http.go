@@ -36,13 +36,15 @@ Deprecated: Use SendErrorMsg() instead
 */
 func SendError(w http.ResponseWriter, err error) {
 	SendErrorMsg(w, err, "Error", http.StatusInternalServerError)
-	return
 }
 
 func SendErrorMsg(w http.ResponseWriter, err error, msg string, statusCode int) {
 	http.Error(w, msg, statusCode)
 	log.Println(err.Error())
-	return
+}
+
+func ServerError(w http.ResponseWriter, err error) {
+	SendErrorMsg(w, err, "Internal Server Error", http.StatusInternalServerError)
 }
 
 // TraceRequest Persist Istio Tracing Headers

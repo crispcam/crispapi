@@ -29,7 +29,7 @@ type Nutrition struct {
 	EnergyKj     int     `json:"energy_kj,omitempty" firestore:"energyKj,omitempty"`
 	EnergyCal    int     `json:"energy_cal,omitempty" firestore:"energyCal,omitempty"`
 	Fat          float64 `json:"fat,omitempty" firestore:"fat,omitempty"`
-	SaturatedFat float64 `json:"saturated_fat,omitempty" firestore:"saturated_fat,omitempty"`
+	SaturatedFat float64 `json:"saturated_fat" firestore:"saturatedFat,omitempty"`
 	Carbs        float64 `json:"carbs,omitempty" firestore:"carbs,omitempty"`
 	Sugar        float64 `json:"sugar,omitempty" firestore:"sugar,omitempty"`
 	Fibre        float64 `json:"fibre,omitempty" firestore:"fibre,omitempty"`

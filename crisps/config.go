@@ -5,6 +5,10 @@ import (
 	"log"
 )
 
+const (
+	CtxKey = "crispcam-config"
+)
+
 func LoadConfig() (Config, error) {
 	var config Config
 	viper.SetConfigName("config")
