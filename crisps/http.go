@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"google.golang.org/grpc/metadata"
 	"io"
 	"io/ioutil"
 	"log"
@@ -17,7 +16,11 @@ import (
 type contextKey string
 
 var (
-	contextKeyHeaders = contextKey("headers")
+	ContextKeyHeaders = contextKey("headers")
+	PersistHeaders    = []string{
+		"User-Agent",
+		"user-agent",
+	}
 )
 
 func (c contextKey) String() string {
@@ -52,17 +55,14 @@ func TraceRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var headers = http.Header{}
 		ctx := r.Context()
-		tracingHeaders := []string{
-			"user-agent",
-		}
-		for _, key := range tracingHeaders {
+		for _, key := range PersistHeaders {
 			if val := r.Header.Get(key); val != "" {
-				// Persist headers for both GRPC and HTTP
-				ctx = metadata.AppendToOutgoingContext(ctx, key, val)
+				// Persist these headers
+				//ctx = metadata.AppendToOutgoingContext(ctx, key, val)
 				headers.Add(key, val)
 			}
 		}
-		ctx = context.WithValue(ctx, contextKeyHeaders, headers)
+		ctx = context.WithValue(ctx, ContextKeyHeaders, headers)
 		handler.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
@@ -74,6 +74,20 @@ func Request(ctx context.Context, u string, method string, form url.Values) ([]b
 		return result, err
 	}
 
+	for s, i := range req.Header {
+		fmt.Printf("%v ==> %v", s, i)
+	}
+
+	// Headers to persist
+	headers, ok := ctx.Value(ContextKeyHeaders).(http.Header)
+	if ok {
+		for s, i := range headers {
+			for _, h := range i {
+				req.Header.Set(s, h)
+			}
+		}
+	}
+
 	// Assume json if there isn't a body, otherwise it's an encoded form
 	if form == nil {
 		req.Header.Set("Content-Type", "application/json; charset=utf-8")
@@ -83,6 +97,7 @@ func Request(ctx context.Context, u string, method string, form url.Values) ([]b
 	}
 
 	client := http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return result, err
