@@ -9,6 +9,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 	"go.opentelemetry.io/otel/trace"
 	"log"
+	"os"
 )
 
 func Tracer(name string, project string) (trace.Tracer, error) {
@@ -17,13 +18,19 @@ func Tracer(name string, project string) (trace.Tracer, error) {
 		log.Println("Failed to set up tracing: " + err.Error())
 		return nil, err
 	}
+	var ns string
+	if os.Getenv("TRACE_NAMESPACE") != "" {
+		ns = os.Getenv("TRACE_NAMESPACE")
+	} else {
+		ns = "crispcam"
+	}
 	// Configure trace source information
 	r, err := resource.Merge(
 		resource.Default(),
 		resource.NewWithAttributes(
 			semconv.SchemaURL,
 			semconv.ServiceNameKey.String(name),
-			semconv.ServiceNamespaceKey.String("crispcam"),
+			semconv.ServiceNamespaceKey.String(ns),
 		),
 	)
 	if err != nil {
